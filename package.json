@@ -1,20 +1,15 @@
 {
-  "name": "claude-code-proxy",
+  "name": "conduit",
   "version": "1.0.0",
   "description": "Expose your Claude Code subscription as an HTTP API",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
-    "tunnel": "./start-with-ngrok.sh"
+    "start": "node server.js"
   },
   "keywords": ["claude", "anthropic", "proxy", "api", "claude-code"],
-  "author": "",
   "license": "MIT",
-  "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
     "express": "^4.18.2"
   }
 }

@@ -1,30 +1,18 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { execSync } = require('child_process');
 
 const app = express();
-const PORT = process.env.PORT || 3456;
+const PORT = 3456;
 
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
-
-// Optional auth
-const authenticate = (req, res, next) => {
-  if (!process.env.PROXY_API_KEY) return next();
-  const apiKey = req.headers['x-api-key'];
-  if (apiKey !== process.env.PROXY_API_KEY) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-  next();
-};
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Main endpoint - just send a prompt, get a response
-app.post('/chat', authenticate, (req, res) => {
+app.post('/chat', (req, res) => {
   try {
     const { prompt, model, system } = req.body;
 
@@ -40,7 +28,7 @@ app.post('/chat', authenticate, (req, res) => {
     const escapedPrompt = prompt.replace(/'/g, "'\\''");
     const command = `claude ${args.join(' ')} '${escapedPrompt}'`;
 
-    console.log(`[${new Date().toISOString()}] Request: ${prompt.substring(0, 50)}...`);
+    console.log(`[${new Date().toISOString()}] ${prompt.substring(0, 50)}...`);
 
     const result = execSync(command, {
       encoding: 'utf8',
@@ -64,6 +52,5 @@ app.post('/chat', authenticate, (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`\nClaude Code Proxy: http://localhost:${PORT}`);
-  console.log(`\nPOST /chat { "prompt": "your message", "model": "sonnet" }\n`);
+  console.log(`\nConduit running on http://localhost:${PORT}\n`);
 });
